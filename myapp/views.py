@@ -2,11 +2,40 @@ from django.shortcuts import render
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import reverse
-from django.views.generic import TemplateView, FormView
-from .forms import ContactForm
+from .forms import CreateUserForm, LoginForm
+
+def signup(request):
+    form = CreateUserForm()
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('signin')
+   
+    context = {'signupform':form}
+
+    return render(request, 'signup.html', context=context)
+
+
 
 def login(request):
-    return render(request, 'login.html')
+    form = LoginForm()
+
+    if request.method == "POST":
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("dashboard")
+            name=user.username
+    context={'loginform':form}
+
+    return render(request, 'login.html', context=context)
+
+
 def home(request):
     return render(request, 'home.html')
 
@@ -15,34 +44,3 @@ def about(request):
 
 def contact(request):
     return render(request, 'contact.html')
-
-class SuccessView(TemplateView):
-    template_name = "success.html"
-
-
-class ContactView(FormView):
-    form_class = ContactForm
-    template_name = "test.html"
-
-    def get_success_url(self):
-        return reverse("contact")
-
-    def form_valid(self, form):
-        email = form.cleaned_data.get("email")
-        subject = form.cleaned_data.get("subject")
-        message = form.cleaned_data.get("message")
-
-        full_message = f"""
-            Received message below from {email}, {subject}
-            ________________________
-
-
-            {message}
-            """
-        send_mail(
-            subject="Received contact form submission",
-            message=full_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[settings.NOTIFY_EMAIL],
-        )
-        return super(ContactView, self).form_valid(form)
