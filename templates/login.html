@@ -3,10 +3,11 @@
     <body>
         <form method="post">
             {% csrf_token %}
-            {{loginform.as_p}}
-            <input type="submit" value="login"/>
+            {{ loginform.as_p }}
+            <button class="btn btn-primary" type="submit">Login</button>
         </form>
-
-       <button> <p>Don't have an account?<a  href="{% url 'signup' %}"> signup here</a></button></p>
+        <button>
+            <p>Don't have an account?<a href="{% url 'signup' %}">Signup here</a></p>
+        </button>
     </body>
 {% endblock content %}

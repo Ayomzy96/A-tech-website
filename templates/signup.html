@@ -2,16 +2,11 @@
 
 {% block content %}
 <body>
-    <h3>Signup</h3>
 
     <form method="post">
-    {% csrf_token %}
-       
-
-    {{signupform.as_p}}
-
-    <input type = "submit" value = "Signup"/>
-
+        {% csrf_token %}
+        {{ signupform.as_p }}
+        <input type="submit" value="Signup"/>
     </form>
 </body>
 {% endblock content %}
