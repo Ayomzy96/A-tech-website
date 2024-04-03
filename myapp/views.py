@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import reverse
 from .forms import CreateUserForm, LoginForm
-
+from django.contrib.auth import authenticate, login, logout
 def signup(request):
     form = CreateUserForm()
     if request.method == "POST":
@@ -18,7 +18,7 @@ def signup(request):
 
 
 
-def login(request):
+def loginauth(request):
     form = LoginForm()
 
     if request.method == "POST":
@@ -35,7 +35,6 @@ def login(request):
 
     return render(request, 'login.html', context=context)
 
-
 def home(request):
     return render(request, 'home.html')
 
@@ -44,3 +43,7 @@ def about(request):
 
 def contact(request):
     return render(request, 'contact.html')
+
+
+def dashboard(request):
+    return render(request, 'dashboard.html')
